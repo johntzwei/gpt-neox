@@ -252,6 +252,9 @@ def _num_epochs(tokens_per_epoch, seq_length, num_samples):
         # but the last token will overlap with the first token of the next
         # sample except for the last sample.
         if ((total_tokens - 1) // seq_length) >= num_samples:
+            print('tokens_per_epoch', tokens_per_epoch)
+            print('total_tokens', (total_tokens-1))
+            print('actual epochs', (total_tokens-1 / tokens_per_epoch))
             return num_epochs
 
 
