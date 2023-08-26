@@ -164,6 +164,9 @@ def convert(input_checkpoint_path, loaded_config, output_checkpoint_path):
     
     mp_partitions = get_key(loaded_config, "model-parallel-size")
 
+    for k, v in hf_model.state_dict().items():
+        print('%.4f %s' % (v.sum(), k))
+
     ### Embedding layer ###
     loaded_tp_ranks = load_partitions(input_checkpoint_path, mp_partitions, 0)
     hf_model.gpt_neox.embed_in.load_state_dict(
@@ -227,10 +230,10 @@ def convert(input_checkpoint_path, loaded_config, output_checkpoint_path):
         state_dict["attention.rotary_emb.inv_freq"] = loaded_tp_ranks[0][
             "attention.rotary_emb.inv_freq"
         ]
-        state_dict["attention.bias"] = hf_layer.state_dict()["attention.bias"]
-        state_dict["attention.masked_bias"] = hf_layer.state_dict()[
-            "attention.masked_bias"
-        ]
+        # state_dict["attention.bias"] = hf_layer.state_dict()["attention.bias"]
+        # state_dict["attention.masked_bias"] = hf_layer.state_dict()[
+        #     "attention.masked_bias"
+        # ]
 
         # load state_dict into layer
         hf_layer.load_state_dict(state_dict)
